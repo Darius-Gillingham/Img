@@ -1,0 +1,7 @@
+servera: ts-node serverA.ts
+serverb: ts-node serverB.ts
+cleanerb: ts-node cleanerB.ts
+serverc: ts-node serverC.ts
+cleanerc: ts-node cleanerC.ts
+serverd: ts-node serverD.ts
+cleanerd: ts-node cleanerD.ts
