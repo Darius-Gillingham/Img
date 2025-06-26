@@ -1,7 +1,7 @@
-servera: ts-node serverA.ts
-serverb: ts-node serverB.ts
-cleanerb: ts-node cleanerB.ts
-serverc: ts-node serverC.ts
-cleanerc: ts-node cleanerC.ts
-serverd: ts-node serverD.ts
-cleanerd: ts-node cleanerD.ts
+servera: node src/serverA.js
+serverb: node src/serverB.js
+cleanerb: node src/cleanerB.js
+serverc: node src/serverC.js
+cleanerc: node src/cleanerC.js
+serverd: node src/serverD.js
+cleanerd: node src/cleanerD.js
