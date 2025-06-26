@@ -1,6 +1,3 @@
-// File: serverB.js
-// Commit: update Supabase client to use SERVICE_ROLE env var instead of SERVICE_KEY for deployment compatibility
-
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs/promises';
@@ -41,17 +38,21 @@ function getTimestampFilename() {
 async function getRandomValue(column) {
   const { data, error } = await supabase
     .from('prompt_components')
-    .select(column)
-    .order('RANDOM()')
-    .limit(1);
+    .select(column);
 
   if (error || !data || data.length === 0) {
-    console.warn(`✗ Failed to fetch random ${column}:`, error || 'No data');
+    console.warn(`✗ Failed to fetch ${column}:`, error || 'No data');
     return null;
   }
 
-  const row = data[0];
-  return row[column] || null;
+  const values = data.map(row => row[column]).filter(Boolean);
+  if (values.length === 0) {
+    console.warn(`✗ No non-null values for ${column}`);
+    return null;
+  }
+
+  const randomIndex = Math.floor(Math.random() * values.length);
+  return values[randomIndex];
 }
 
 async function createWordset() {
