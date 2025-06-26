@@ -2,7 +2,7 @@
   "name": "img",
   "version": "1.0.0",
   "description": "",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "start": "node src/serverA.js"
   },
