@@ -1,5 +1,5 @@
-// File: cleanerB.ts
-// Commit: upload completed wordset files to Supabase and delete after '.done' flag detected
+// File: cleanerB.js
+// Commit: convert TypeScript wordset cleaner to JavaScript with Supabase upload and .done-based deletion logic preserved
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -8,35 +8,20 @@ import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
-console.log('=== Running cleanerB.ts ===');
+console.log('=== Running cleanerB.js ===');
 
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 const DIR = './data/prompts';
 
-async function getFinishedFiles(): Promise<string[]> {
-  const files = await fs.readdir(DIR);
-  return files
-    .filter((f) => f.startsWith('wordsets-') && f.endsWith('.json'))
-    .filter(async (f) => {
-      const donePath = path.join(DIR, f + '.done');
-      try {
-        await fs.access(donePath);
-        return true;
-      } catch {
-        return false;
-      }
-    });
-}
-
-async function uploadWordsets(file: string): Promise<void> {
+async function uploadWordsets(file) {
   const fullPath = path.join(DIR, file);
   const data = await fs.readFile(fullPath, 'utf-8');
   const parsed = JSON.parse(data);
-  const wordsets: string[][] = parsed.wordsets;
+  const wordsets = parsed.wordsets;
 
   for (const ws of wordsets) {
     const [noun1, noun2, verb, adjective1, adjective2, style, setting, era, mood] = ws;

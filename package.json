@@ -1,21 +1,15 @@
 {
   "name": "img",
   "version": "1.0.0",
-  "main": "dist/serverA-chatgpt.js",
+  "description": "",
+  "main": "serverA-componentPopulator.js",
+  "type": "commonjs",
   "scripts": {
-    "build": "npx --no-install tsc",
-    "start": "node dist/serverA-chatgpt.js"
+    "start": "node serverA-componentPopulator.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "description": "",
-  "devDependencies": {
-    "@types/node": "^24.0.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.0",
     "axios": "^1.10.0",

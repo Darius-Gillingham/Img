@@ -1,5 +1,5 @@
-// File: serverD.ts
-// Commit: add .done flag after completing all images for a prompt file
+// File: serverD.js
+// Commit: convert TypeScript DALL·E image rendering server to JavaScript with .done flagging preserved and batch-tagged downloads
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -9,9 +9,9 @@ import OpenAI from 'openai';
 
 dotenv.config();
 
-console.log('=== Running serverD.ts ===');
+console.log('=== Running serverD.js ===');
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const PROMPT_DIR = './data/generated';
 const IMAGE_DIR = './data/images';
@@ -20,33 +20,36 @@ async function ensureImageDir() {
   await fs.mkdir(IMAGE_DIR, { recursive: true });
 }
 
-async function loadPromptFiles(): Promise<string[]> {
+async function loadPromptFiles() {
   const files = await fs.readdir(PROMPT_DIR);
-  return files
-    .filter((f) => f.startsWith('generated-prompts-') && f.endsWith('.json'))
-    .filter(async (f) => {
+  const validFiles = [];
+
+  for (const f of files) {
+    if (f.startsWith('generated-prompts-') && f.endsWith('.json')) {
       try {
         await fs.access(path.join(PROMPT_DIR, f + '.done'));
-        return false; // already done
       } catch {
-        return true;
+        validFiles.push(f);
       }
-    });
+    }
+  }
+
+  return validFiles;
 }
 
-async function loadPromptsFromFile(file: string): Promise<string[]> {
+async function loadPromptsFromFile(file) {
   const content = await fs.readFile(path.join(PROMPT_DIR, file), 'utf-8');
   const parsed = JSON.parse(content);
   return Array.isArray(parsed.prompts) ? parsed.prompts : [];
 }
 
-async function downloadImage(url: string, filename: string) {
+async function downloadImage(url, filename) {
   const res = await axios.get(url, { responseType: 'arraybuffer' });
   await fs.writeFile(path.join(IMAGE_DIR, filename), res.data);
   console.log(`✓ Saved image: ${filename}`);
 }
 
-async function generateImage(prompt: string, index: number, batchTag: string) {
+async function generateImage(prompt, index, batchTag) {
   const response = await openai.images.generate({
     model: 'dall-e-3',
     prompt,
@@ -67,7 +70,7 @@ async function generateImage(prompt: string, index: number, batchTag: string) {
   await downloadImage(url, filename);
 }
 
-function getBatchTagFromFilename(filename: string): string {
+function getBatchTagFromFilename(filename) {
   return filename.replace(/^generated-prompts-/, '').replace(/\.json$/, '');
 }
 

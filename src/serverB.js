@@ -1,5 +1,5 @@
-// File: serverB.ts
-// Commit: resolve Supabase row typing error by using unknown-to-typed cast
+// File: serverB.js
+// Commit: convert Supabase wordset generation server from TypeScript to modular JavaScript with safe typing and identical logic
 
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
@@ -8,11 +8,11 @@ import path from 'path';
 
 dotenv.config();
 
-console.log('=== Running serverB.ts ===');
+console.log('=== Running serverB.js ===');
 
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 const COMPONENT_COLUMNS = [
@@ -29,7 +29,7 @@ const COMPONENT_COLUMNS = [
 
 const OUTPUT_DIR = './data/prompts';
 
-function getTimestampFilename(): string {
+function getTimestampFilename() {
   const now = new Date();
   const timestamp = now
     .toISOString()
@@ -38,7 +38,7 @@ function getTimestampFilename(): string {
   return `wordsets-${timestamp}.json`;
 }
 
-async function getRandomValue(column: string): Promise<string | null> {
+async function getRandomValue(column) {
   const { data, error } = await supabase
     .from('prompt_components')
     .select(column)
@@ -50,14 +50,12 @@ async function getRandomValue(column: string): Promise<string | null> {
     return null;
   }
 
-  const raw = data[0] as unknown;
-  const row = raw as { [key: string]: string };
-
+  const row = data[0];
   return row[column] || null;
 }
 
-async function createWordset(): Promise<string[] | null> {
-  const wordset: string[] = [];
+async function createWordset() {
+  const wordset = [];
 
   for (const column of COMPONENT_COLUMNS) {
     const value = await getRandomValue(column);
@@ -73,7 +71,7 @@ async function createWordset(): Promise<string[] | null> {
 
 async function run(batchSize = 20) {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
-  const wordsets: string[][] = [];
+  const wordsets = [];
 
   for (let i = 0; i < batchSize; i++) {
     const wordset = await createWordset();

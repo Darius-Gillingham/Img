@@ -1,5 +1,5 @@
-// File: cleanerC.ts
-// Commit: upload finalized GPT prompt files to Supabase after '.done' flag is present
+// File: cleanerC.js
+// Commit: convert TypeScript GPT prompt cleaner to JavaScript with Supabase upload and .done completion handling maintained
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -8,35 +8,20 @@ import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
-console.log('=== Running cleanerC.ts ===');
+console.log('=== Running cleanerC.js ===');
 
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 const DIR = './data/generated';
 
-async function getFinishedFiles(): Promise<string[]> {
-  const files = await fs.readdir(DIR);
-  return files
-    .filter((f) => f.startsWith('generated-prompts-') && f.endsWith('.json'))
-    .filter(async (f) => {
-      const donePath = path.join(DIR, f + '.done');
-      try {
-        await fs.access(donePath);
-        return true;
-      } catch {
-        return false;
-      }
-    });
-}
-
-async function uploadPrompts(file: string): Promise<void> {
+async function uploadPrompts(file) {
   const fullPath = path.join(DIR, file);
   const data = await fs.readFile(fullPath, 'utf-8');
   const parsed = JSON.parse(data);
-  const prompts: string[] = parsed.prompts;
+  const prompts = parsed.prompts;
 
   for (const prompt of prompts) {
     await supabase.from('dalle_prompts').insert({ prompt });

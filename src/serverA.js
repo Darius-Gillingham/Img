@@ -1,5 +1,5 @@
-// File: serverA-componentPopulator.ts
-// Commit: populate full 10-column prompt_components table using GPT with dupe detection
+// File: serverA-componentPopulator.js
+// Commit: convert TypeScript component populator server to modular JavaScript with identical behavior and strict format adherence
 
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
@@ -7,28 +7,16 @@ import OpenAI from 'openai';
 
 dotenv.config();
 
-console.log('=== Running serverA-componentPopulator.ts ===');
+console.log('=== Running serverA-componentPopulator.js ===');
 
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
 );
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-interface ComponentSet {
-  noun1: string;
-  noun2: string;
-  verb: string;
-  adjective1: string;
-  adjective2: string;
-  style: string;
-  setting: string;
-  era: string;
-  mood: string;
-}
-
-async function generateComponentSet(): Promise<ComponentSet | null> {
+async function generateComponentSet() {
   const prompt = `Generate a richly creative and non-generic combination of the following:
 
 - Two unique nouns (noun1, noun2)
@@ -60,7 +48,10 @@ Do not explain. Just return the JSON. Avoid obvious or common combinations. Focu
     temperature: 1.5,
     top_p: 0.95,
     messages: [
-      { role: 'system', content: 'You are an AI designed to generate diverse prompt components for creative image generation.' },
+      {
+        role: 'system',
+        content: 'You are an AI designed to generate diverse prompt components for creative image generation.'
+      },
       { role: 'user', content: prompt }
     ]
   });
@@ -69,7 +60,7 @@ Do not explain. Just return the JSON. Avoid obvious or common combinations. Focu
   if (!content) return null;
 
   try {
-    const parsed: ComponentSet = JSON.parse(content);
+    const parsed = JSON.parse(content);
     return parsed;
   } catch (err) {
     console.warn('✗ Failed to parse GPT output as JSON:', content);
@@ -77,7 +68,7 @@ Do not explain. Just return the JSON. Avoid obvious or common combinations. Focu
   }
 }
 
-async function isDuplicate(set: ComponentSet): Promise<boolean> {
+async function isDuplicate(set) {
   const { data, error } = await supabase
     .from('prompt_components')
     .select('id')
@@ -92,7 +83,7 @@ async function isDuplicate(set: ComponentSet): Promise<boolean> {
   return data.length > 0;
 }
 
-async function insertComponentSet(set: ComponentSet): Promise<void> {
+async function insertComponentSet(set) {
   const { error } = await supabase.from('prompt_components').insert(set);
   if (error) {
     console.error('✗ Insert failed:', error);

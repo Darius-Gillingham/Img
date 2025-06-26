@@ -1,5 +1,5 @@
-// File: cleanerD.ts
-// Commit: immediately upload all images to Supabase Storage and delete after upload
+// File: cleanerD.js
+// Commit: convert TypeScript image cleaner to JavaScript with Supabase Storage upload and post-upload deletion preserved
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -8,17 +8,17 @@ import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
-console.log('=== Running cleanerD.ts ===');
+console.log('=== Running cleanerD.js ===');
 
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 const DIR = './data/images';
 const BUCKET = 'dalle-images';
 
-async function uploadImage(filename: string) {
+async function uploadImage(filename) {
   const filepath = path.join(DIR, filename);
   const data = await fs.readFile(filepath);
 

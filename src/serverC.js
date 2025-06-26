@@ -1,5 +1,5 @@
-// File: serverC.ts
-// Commit: flag prompt JSON files as complete after GPT generation using .done marker
+// File: serverC.js
+// Commit: convert TypeScript prompt generation server to JavaScript with .done flag handling and modular independence preserved
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -8,15 +8,15 @@ import OpenAI from 'openai';
 
 dotenv.config();
 
-console.log('=== Running serverC.ts ===');
+console.log('=== Running serverC.js ===');
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const WORDSET_DIR = './data/prompts';
 const OUTPUT_DIR = './data/generated';
 
-async function loadAllWordsets(): Promise<string[][]> {
+async function loadAllWordsets() {
   const files = await fs.readdir(WORDSET_DIR);
-  const allWordsets: string[][] = [];
+  const allWordsets = [];
 
   for (const file of files) {
     if (!file.startsWith('wordsets-') || !file.endsWith('.json')) continue;
@@ -33,7 +33,7 @@ async function loadAllWordsets(): Promise<string[][]> {
   return allWordsets;
 }
 
-function pickTwoDistinct<T>(arr: T[]): [T, T] {
+function pickTwoDistinct(arr) {
   const first = arr[Math.floor(Math.random() * arr.length)];
   let second = first;
   while (second === first && arr.length > 1) {
@@ -42,7 +42,7 @@ function pickTwoDistinct<T>(arr: T[]): [T, T] {
   return [first, second];
 }
 
-async function generatePromptsFromWordsets(ws1: string[], ws2: string[]): Promise<string[]> {
+async function generatePromptsFromWordsets(ws1, ws2) {
   const combined = Array.from(new Set([...ws1, ...ws2]));
   const wordList = combined.join(', ');
 
@@ -78,7 +78,7 @@ async function generatePromptsFromWordsets(ws1: string[], ws2: string[]): Promis
   }
 }
 
-function getOutputFilename(): string {
+function getOutputFilename() {
   const now = new Date();
   const timestamp = now.toISOString().replace(/[-:T]/g, '').slice(0, 14);
   return `generated-prompts-${timestamp}.json`;
