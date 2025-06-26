@@ -2,10 +2,9 @@
   "name": "img",
   "version": "1.0.0",
   "description": "",
-  "main": "serverA-componentPopulator.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node serverA-componentPopulator.js"
+    "start": "node src/serverA.js"
   },
   "keywords": [],
   "author": "",
