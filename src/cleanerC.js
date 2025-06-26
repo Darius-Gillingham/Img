@@ -1,5 +1,5 @@
 // File: cleanerC.js
-// Commit: convert TypeScript GPT prompt cleaner to JavaScript with Supabase upload and .done completion handling maintained
+// Commit: update Supabase client to use SERVICE_ROLE instead of SERVICE_KEY to align with deployment env
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -12,7 +12,7 @@ console.log('=== Running cleanerC.js ===');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_SERVICE_ROLE
 );
 
 const DIR = './data/generated';

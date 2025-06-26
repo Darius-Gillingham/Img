@@ -1,5 +1,5 @@
 // File: cleanerB.js
-// Commit: convert TypeScript wordset cleaner to JavaScript with Supabase upload and .done-based deletion logic preserved
+// Commit: switch Supabase env var from SERVICE_KEY to SERVICE_ROLE for deployment compatibility
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -12,7 +12,7 @@ console.log('=== Running cleanerB.js ===');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_SERVICE_ROLE
 );
 
 const DIR = './data/prompts';

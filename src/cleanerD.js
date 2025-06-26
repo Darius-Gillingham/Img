@@ -1,5 +1,5 @@
 // File: cleanerD.js
-// Commit: convert TypeScript image cleaner to JavaScript with Supabase Storage upload and post-upload deletion preserved
+// Commit: switch Supabase Storage client to use SERVICE_ROLE instead of SERVICE_KEY for production compatibility
 
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
@@ -12,7 +12,7 @@ console.log('=== Running cleanerD.js ===');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_SERVICE_ROLE
 );
 
 const DIR = './data/images';

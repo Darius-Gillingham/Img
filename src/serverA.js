@@ -1,5 +1,5 @@
 // File: serverA-componentPopulator.js
-// Commit: convert TypeScript component populator server to modular JavaScript with identical behavior and strict format adherence
+// Commit: switch Supabase env var from SERVICE_KEY to SERVICE_ROLE to match .env and Railway config
 
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
@@ -11,7 +11,7 @@ console.log('=== Running serverA-componentPopulator.js ===');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_SERVICE_ROLE
 );
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

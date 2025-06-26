@@ -1,5 +1,5 @@
 // File: serverB.js
-// Commit: convert Supabase wordset generation server from TypeScript to modular JavaScript with safe typing and identical logic
+// Commit: update Supabase client to use SERVICE_ROLE env var instead of SERVICE_KEY for deployment compatibility
 
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
@@ -12,7 +12,7 @@ console.log('=== Running serverB.js ===');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_SERVICE_ROLE
 );
 
 const COMPONENT_COLUMNS = [
